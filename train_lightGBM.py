@@ -46,3 +46,20 @@ print("\n测试集准确率:", accuracy_score(y_test, y_pred))
 print("\n分类报告:\n", classification_report(y_test, y_pred))
 
 MyTool.save(best_model, "lightGBM_model")
+
+
+# 最佳参数组合: {'model__learning_rate': 0.1, 'model__max_depth': 3, 'model__min_child_samples': 30, 'model__n_estimators': 100, 'model__num_leaves': 15}
+
+# 测试集准确率: 0.793
+
+# 分类报告:
+#                precision    recall  f1-score   support
+
+#            0       0.82      0.83      0.82      1172
+#            1       0.76      0.74      0.75       828
+
+#     accuracy                           0.79      2000
+#    macro avg       0.79      0.79      0.79      2000
+# weighted avg       0.79      0.79      0.79      2000
+
+

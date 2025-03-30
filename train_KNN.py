@@ -2,9 +2,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from MyTool import MyTool
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test, preprocessor = MyTool.getdata()
@@ -43,3 +44,27 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 MyTool.save(best_model, "KNN_model")  # 保存模型
 
+# 混淆矩阵
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=['Negative', 'Positive'], 
+            yticklabels=['Negative', 'Positive'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+# Best Parameters: {'knn__metric': 'euclidean', 'knn__n_neighbors': 79, 'knn__weights': 'uniform', 'scaler': StandardScaler(with_mean=False)}
+
+# Accuracy: 0.795
+
+# Classification Report:
+#                precision    recall  f1-score   support
+
+#            0       0.82      0.83      0.83      1172
+#            1       0.75      0.75      0.75       828
+
+#     accuracy                           0.80      2000
+#    macro avg       0.79      0.79      0.79      2000
+# weighted avg       0.79      0.80      0.79      2000

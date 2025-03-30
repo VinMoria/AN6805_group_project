@@ -21,3 +21,15 @@ print("Accuracy:", accuracy_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 MyTool.save(pipeline, "RandomForest_model")
+
+# Accuracy: 0.781
+
+# Classification Report:
+#                precision    recall  f1-score   support
+
+#            0       0.80      0.83      0.82      1172
+#            1       0.75      0.71      0.73       828
+
+#     accuracy                           0.78      2000
+#    macro avg       0.78      0.77      0.77      2000
+# weighted avg       0.78      0.78      0.78      2000

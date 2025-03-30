@@ -1,9 +1,11 @@
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from xgboost import XGBClassifier
 from sklearn.pipeline import Pipeline
 from MyTool import MyTool
-
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test, preprocessor = MyTool.getdata()
@@ -13,6 +15,7 @@ pipeline = Pipeline([
     ('preprocessor', preprocessor),
     ('model', XGBClassifier(random_state=42))
 ])
+
 # 定义参数网格
 param_grid = {
     'model__n_estimators': [50, 100, 200],
@@ -46,4 +49,57 @@ y_pred = best_model.predict(X_test)
 print("\n测试集准确率:", accuracy_score(y_test, y_pred))
 print("\n分类报告:\n", classification_report(y_test, y_pred))
 
+# 获取特征重要性
+xgb_model = best_model.named_steps['model']
+feature_importances = xgb_model.feature_importances_
+
+# 获取特征名称
+try:
+    feature_names = best_model.named_steps['preprocessor'].get_feature_names_out()
+except AttributeError:
+    # 如果preprocessor没有get_feature_names_out方法，使用默认的列名
+    feature_names = np.array(X_train.columns)
+
+# 按重要性排序（从高到低）
+sorted_idx = np.argsort(feature_importances)[::-1]
+sorted_importances = feature_importances[sorted_idx]
+sorted_feature_names = feature_names[sorted_idx]
+
+# 绘制排序后的特征重要性
+plt.figure(figsize=(10, 6))
+plt.barh(range(len(sorted_importances)), sorted_importances, align='center')
+plt.yticks(range(len(sorted_importances)), sorted_feature_names)
+plt.xlabel('Feature Importance')
+plt.ylabel('Feature')
+plt.title('XGBoost Feature Importance (Sorted)')
+plt.tight_layout()
+plt.show()
+
+
+# 混淆矩阵
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=['Negative', 'Positive'], 
+            yticklabels=['Negative', 'Positive'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+# 保存模型
 MyTool.save(best_model, "XGB_model")
+
+# 最佳参数组合: {'model__colsample_bytree': 0.8, 'model__learning_rate': 0.1, 'model__max_depth': 3, 'model__n_estimators': 50, 'model__subsample': 0.8}
+
+# 测试集准确率: 0.7965
+
+# 分类报告:
+#                precision    recall  f1-score   support
+
+#            0       0.82      0.83      0.83      1172
+#            1       0.76      0.74      0.75       828
+
+#     accuracy                           0.80      2000
+#    macro avg       0.79      0.79      0.79      2000
+# weighted avg       0.80      0.80      0.80      2000
