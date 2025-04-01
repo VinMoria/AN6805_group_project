@@ -22,7 +22,7 @@ pipeline = Pipeline(
 # 定义GridSearchCV的参数网格
 param_grid = {
     "knn__n_neighbors": [78, 79, 80, 81, 82],  # 不同的K值
-    "knn__metric": ["euclidean", "manhattan"], 
+    "knn__metric": ["euclidean", "manhattan"],
     "knn__weights": ["uniform", "distance"],  # 是否加权
     "scaler": [StandardScaler(with_mean=False), "passthrough"],  # 是否归一化
 }
@@ -47,12 +47,17 @@ MyTool.save(best_model, "KNN_model")  # 保存模型
 # 混淆矩阵
 cm = confusion_matrix(y_test, y_pred)
 plt.figure(figsize=(8, 6))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-            xticklabels=['Negative', 'Positive'], 
-            yticklabels=['Negative', 'Positive'])
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix')
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Negative", "Positive"],
+    yticklabels=["Negative", "Positive"],
+)
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
 plt.show()
 
 # Best Parameters: {'knn__metric': 'euclidean', 'knn__n_neighbors': 79, 'knn__weights': 'uniform', 'scaler': StandardScaler(with_mean=False)}
