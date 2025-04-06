@@ -23,6 +23,22 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 # 保存模型
 MyTool.save(pipeline, "NeuralNetwork_model")
 
+#绘制混淆矩阵
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Negative", "Positive"],
+    yticklabels=["Negative", "Positive"],
+)
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.show()
+
 # Accuracy: 0.791
 
 # Classification Report:
