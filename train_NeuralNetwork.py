@@ -1,6 +1,8 @@
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, precision_score, recall_score
 from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+import seaborn as sns
 from MyTool import MyTool
 
 # 获取数据和预处理器
@@ -23,21 +25,36 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 # 保存模型
 MyTool.save(pipeline, "NeuralNetwork_model")
 
-#绘制混淆矩阵
+
+# 计算混淆矩阵
 cm = confusion_matrix(y_test, y_pred)
+
+# 计算精度、召回率（可针对每个类别输出）
+precision = precision_score(y_test, y_pred, average=None)
+recall = recall_score(y_test, y_pred, average=None)
+accuracy = accuracy_score(y_test, y_pred)
+
+# 绘制混淆矩阵
 plt.figure(figsize=(8, 6))
-sns.heatmap(
-    cm,
-    annot=True,
-    fmt="d",
-    cmap="Blues",
-    xticklabels=["Negative", "Positive"],
-    yticklabels=["Negative", "Positive"],
-)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Class 0','Class 1'],
+            yticklabels=['Class 0','Class 1'])
+plt.title("Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
-plt.title("Confusion Matrix")
+plt.savefig('nnmatrix.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+# 打印关键指标
+print("\n================ Metrics ================")
+print("Accuracy: {:.2f}".format(accuracy))
+print("Precision for Class 0: {:.2f}".format(precision[0]))
+print("Precision for Class 1: {:.2f}".format(precision[1]))
+print("Recall for Class 0: {:.2f}".format(recall[0]))
+print("Recall for Class 1: {:.2f}".format(recall[1]))
+print("Random State:", 42)
+print("Max Iter:", 300)
+
 
 # Accuracy: 0.791
 
