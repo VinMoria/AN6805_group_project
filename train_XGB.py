@@ -61,17 +61,26 @@ except AttributeError:
     feature_names = np.array(X_train.columns)
 
 # 按重要性排序（从高到低）
-sorted_idx = np.argsort(feature_importances)[::-1]
+sorted_idx = np.argsort(feature_importances)
 sorted_importances = feature_importances[sorted_idx]
 sorted_feature_names = feature_names[sorted_idx]
 
 # 绘制排序后的特征重要性
 plt.figure(figsize=(10, 6))
-plt.barh(range(len(sorted_importances)), sorted_importances, align='center')
+bars = plt.barh(range(len(sorted_importances)), sorted_importances, align='center')
 plt.yticks(range(len(sorted_importances)), sorted_feature_names)
 plt.xlabel('Feature Importance')
 plt.ylabel('Feature')
 plt.title('XGBoost Feature Importance (Sorted)')
+
+# 在每个柱状条旁边显示具体数值
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    plt.text(width + 0.01,  # x 坐标（数值右侧）
+             bar.get_y() + bar.get_height() / 2,  # y 坐标（柱状条中心）
+             f'{width:.4f}',  # 显示4位小数
+             ha='left', va='center')
+
 plt.tight_layout()
 plt.show()
 
